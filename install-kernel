@@ -1,0 +1,29 @@
+#!/bin/sh
+set -eu
+if [[ $EUID -ne 0 ]]; then
+	echo "This script must be run as root." >&2
+	exit 1
+fi
+
+set -x
+
+zpool import -a
+
+cd /usr/src/linux
+make -j49 -l49
+make install
+make modules_install
+emerge --ask=n @module-rebuild
+
+KERNVER=$(cat /usr/src/linux/include/config/kernel.release)
+
+dracut --force --lz4 --kver ${KERNVER}
+
+mount /boot/efi
+# Requires one-shot efibootmgr setup:
+# efibootmgr --create --part 2 --disk /dev/sda --label "stub" --loader '\EFI\gentoo\vmlinuz.efi' -u 'initrd=\EFI\gentoo\initramfs.img'
+# Substitute partition/disk as necessary.
+cp /boot/vmlinuz-${KERNVER} /boot/efi/EFI/gentoo/vmlinuz.efi
+cp /boot/initramfs-${KERNVER}.img /boot/efi/EFI/gentoo/initramfs.img
+
+eclean-kernel -n3
