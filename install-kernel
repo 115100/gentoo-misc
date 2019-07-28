@@ -19,7 +19,7 @@ KERNVER=$(cat /usr/src/linux/include/config/kernel.release)
 
 dracut --force --lz4 --kver ${KERNVER}
 
-if mountpoint -q /boot/efi; then
+if ! mountpoint -q /boot/efi; then
 	mount /boot/efi
 fi
 # Requires one-shot efibootmgr setup:
