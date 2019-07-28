@@ -19,7 +19,9 @@ KERNVER=$(cat /usr/src/linux/include/config/kernel.release)
 
 dracut --force --lz4 --kver ${KERNVER}
 
-mount /boot/efi
+if mountpoint -q /boot/efi; then
+	mount /boot/efi
+fi
 # Requires one-shot efibootmgr setup:
 # efibootmgr --create --part 2 --disk /dev/sda --label "stub" --loader '\EFI\gentoo\vmlinuz.efi' -u 'initrd=\EFI\gentoo\initramfs.img'
 # Substitute partition/disk as necessary.
