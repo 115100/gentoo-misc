@@ -1,0 +1,98 @@
+#!/usr/bin/env python3
+# vim: set syntax=python:
+import os
+import subprocess
+
+ARGS = [
+    "qemu-system-x86_64",
+    "-serial",
+    "none",
+    "-parallel",
+    "none",
+    "-enable-kvm",
+    "-name",
+    "Windows",
+    "-bios",
+    "/usr/share/edk2-ovmf/OVMF.fd",
+    "-m",
+    "16384",
+    "-net",
+    "nic",
+    "-mem-prealloc",
+    "-mem-path",
+    "/hugepages",
+    "-cpu",
+    "host,+topoext,kvm=off,hv_relaxed,hv_spinlocks=0x1fff,hv_time,hv_vendor_id=12CHARID",  # noqa: E501
+    "-smp",
+    "24,sockets=1,cores=12,threads=2",
+    "-drive",
+    "file=/path/to/raw/vm/image.img,id=disk,format=raw,if=none",
+    "-usb",
+    "-device",
+    "nec-usb-xhci",
+    "-device",
+    "usb-ehci,id=ehci",
+    "-device",
+    "usb-mouse",
+    "-device",
+    "ide-hd,drive=disk",
+    "-device",
+    "secondary-vga",
+    "-device",
+    "vfio-pci,host=41:00.0,addr=09.0,multifunction=on",
+    "-device",
+    "vfio-pci,host=41:00.1",
+    "-rtc",
+    "base=localtime",
+    "-soundhw",
+    "ac97",
+    "-vga",
+    "none",
+]
+
+if __name__ == "__main__":
+    usb_devices = subprocess.check_output(["lsusb"])
+
+    usb_args = []
+    for l in usb_devices.split(b"\n"):
+        # PS4 controller
+        if b"054c:09cc" in l:
+            pts = l.split(b" ")
+            usb_args.extend(
+                [
+                    "-device",
+                    "usb-host,bus=usb-bus.0,hostbus={},hostaddr={}".format(
+                        int(pts[1]), int(pts[3][:-1])
+                    ),
+                ]
+            )
+        # Fight stick
+        if b"0738:8384" in l:
+            pts = l.split(b" ")
+            usb_args.extend(
+                [
+                    "-device",
+                    "usb-host,bus=usb-bus.0,hostbus={},hostaddr={}".format(
+                        int(pts[1]), int(pts[3][:-1])
+                    ),
+                ]
+            )
+        # iPhone 8+
+        if b"05ac:12a8" in l:
+            pts = l.split(b" ")
+            usb_args.extend(
+                [
+                    "-device",
+                    "usb-host,bus=ehci.0,hostbus={},hostaddr={}".format(
+                        int(pts[1]), int(pts[3][:-1])
+                    ),
+                ]
+            )
+
+    if usb_args:
+        ARGS.extend(["-usb"])
+        ARGS.extend(usb_args)
+
+    os.putenv("QEMU_AUDIO_DRV", "alsa")
+    print(" ".join(ARGS))
+    subprocess.run(ARGS)
