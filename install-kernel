@@ -15,7 +15,7 @@ make install
 make modules_install
 emerge --ask=n @module-rebuild
 
-KERNVER=$(cat /usr/src/linux/include/config/kernel.release)
+read -r KERNVER < /usr/src/linux/include/config/kernel.release
 
 dracut --force --lz4 --kver ${KERNVER}
 
