@@ -12,7 +12,7 @@ zpool import -a
 cd /usr/src/linux
 make -j49 -l49
 make install
-make modules_install
+make INSTALL_MOD_STRIP=1 modules_install
 emerge --ask=n @module-rebuild
 
 read -r KERNVER < /usr/src/linux/include/config/kernel.release
