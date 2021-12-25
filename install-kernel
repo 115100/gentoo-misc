@@ -26,4 +26,4 @@ fi
 cp /boot/vmlinuz-${KERNVER} /boot/efi/EFI/gentoo/vmlinuz.efi
 cp /boot/initramfs-${KERNVER}.img /boot/efi/EFI/gentoo/initramfs.img
 
-eclean-kernel -n3
+eclean-kernel -n10
