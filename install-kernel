@@ -21,7 +21,7 @@ if ! mountpoint -q /boot/efi; then
 	mount /boot/efi
 fi
 # Requires one-shot efibootmgr setup:
-# efibootmgr --create --part 2 --disk /dev/sda --label "stub" --loader '\EFI\gentoo\vmlinuz.efi' -u 'initrd=\EFI\gentoo\initramfs.img'
+# efibootmgr --create --disk /dev/sda --label "stub" --loader '\EFI\gentoo\vmlinuz.efi' -u 'initrd=\EFI\gentoo\initramfs.img'
 # Substitute partition/disk as necessary.
 cp /boot/vmlinuz-${KERNVER} /boot/efi/EFI/gentoo/vmlinuz.efi
 cp /boot/initramfs-${KERNVER}.img /boot/efi/EFI/gentoo/initramfs.img
