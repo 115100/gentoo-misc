@@ -7,8 +7,6 @@ fi
 
 set -x
 
-zpool import -a
-
 cd /usr/src/linux
 make -j49 -l49
 make install
