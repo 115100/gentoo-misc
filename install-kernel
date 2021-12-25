@@ -15,7 +15,7 @@ emerge --ask=n @module-rebuild
 
 read -r KERNVER < /usr/src/linux/include/config/kernel.release
 
-dracut --force --hostonly --lz4 --kver ${KERNVER}
+dracut --force --hostonly --zstd --kver ${KERNVER}
 
 if ! mountpoint -q /boot/efi; then
 	mount /boot/efi
