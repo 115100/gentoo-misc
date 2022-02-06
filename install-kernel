@@ -21,9 +21,11 @@ dracut --force --zstd --kver ${KERNVER}
 if ! mountpoint -q /boot/efi; then
 	mount /boot/efi
 fi
-# Requires one-shot efibootmgr setup:
-# efibootmgr --create --disk /dev/sda --label "stub" --loader '\EFI\gentoo\vmlinuz.efi' -u 'initrd=\EFI\gentoo\initramfs.img'
-# Substitute partition/disk as necessary.
+# Requires one-shot boot setup:
+# Options are:
+# - efibootmgr --create --disk /dev/path/to/device --label "stub" --loader '\EFI\gentoo\vmlinuz.efi' -u 'initrd=\EFI\gentoo\initramfs.img'
+# - use EFI/BOOT/bootx64.efi with initrd args in the kernel cmdline
+# - use a bootloader like rEFInd
 cp /boot/vmlinuz-${KERNVER} /boot/efi/EFI/gentoo/vmlinuz.efi
 cp /boot/initramfs-${KERNVER}.img /boot/efi/EFI/gentoo/initramfs.img
 
