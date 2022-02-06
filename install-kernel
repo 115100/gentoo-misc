@@ -8,7 +8,8 @@ fi
 set -x
 
 cd /usr/src/linux
-make -j49 -l49
+NUM_JOBS=$(($(getconf _NPROCESSORS_ONLN) + 1))
+make -j${NUM_JOBS} -l${NUM_JOBS}
 make install
 make INSTALL_MOD_STRIP=1 modules_install
 emerge --ask=n @module-rebuild
