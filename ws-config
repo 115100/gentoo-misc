@@ -1,6 +1,6 @@
 #
 # Automatically generated file; DO NOT EDIT.
-# Linux/x86 5.15.26-gentoo Kernel Configuration
+# Linux/x86 5.15.32-gentoo-r1 Kernel Configuration
 #
 CONFIG_CC_VERSION_TEXT="gcc (Gentoo 11.2.1_p20220115 p4) 11.2.1 20220115"
 CONFIG_CC_IS_GCC=y
@@ -1584,7 +1584,7 @@ CONFIG_PREVENT_FIRMWARE_BUILD=y
 # Firmware loader
 #
 CONFIG_FW_LOADER=y
-CONFIG_EXTRA_FIRMWARE="amd-ucode/microcode_amd_fam17h.bin"
+CONFIG_EXTRA_FIRMWARE="amd/amd_sev_fam17h_model0xh.sbin amd-ucode/microcode_amd_fam17h.bin"
 CONFIG_EXTRA_FIRMWARE_DIR="/lib/firmware"
 # CONFIG_FW_LOADER_USER_HELPER is not set
 # CONFIG_FW_LOADER_COMPRESS is not set
