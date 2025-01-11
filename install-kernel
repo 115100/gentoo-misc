@@ -7,26 +7,16 @@ fi
 
 set -x
 
-cd /usr/src/linux
-NUM_JOBS=$(($(getconf _NPROCESSORS_ONLN) + 1))
-make -j${NUM_JOBS} -l${NUM_JOBS}
-make install
-make INSTALL_MOD_STRIP=1 modules_install
-emerge --ask=n @module-rebuild
-
-read -r KERNVER < /usr/src/linux/include/config/kernel.release
-
-dracut --force --zstd --kver ${KERNVER}
-
 if ! mountpoint -q /boot/efi; then
 	mount /boot/efi
 fi
-# Requires one-shot boot setup:
-# Options are:
-# - efibootmgr --create --disk /dev/path/to/device --label "stub" --loader '\EFI\gentoo\vmlinuz.efi' -u 'initrd=\EFI\gentoo\initramfs.img'
-# - use EFI/BOOT/bootx64.efi with initrd args in the kernel cmdline
-# - use a bootloader like rEFInd
-cp /boot/vmlinuz-${KERNVER} /boot/efi/EFI/gentoo/vmlinuz.efi
-cp /boot/initramfs-${KERNVER}.img /boot/efi/EFI/gentoo/initramfs.img
+
+cd /usr/src/linux
+NUM_JOBS=$(($(getconf _NPROCESSORS_ONLN) + 1))
+make modules_prepare
+make -j${NUM_JOBS} -l${NUM_JOBS}
+emerge --ask=n @module-rebuild
+make INSTALL_MOD_STRIP=1 modules_install
+make install
 
 eclean-kernel -n10
